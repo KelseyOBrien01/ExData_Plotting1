@@ -1,0 +1,29 @@
+##reading into the R script and wrangling the data for subsequent plot making....
+mydata <- read.table("household_power_consumption.txt", header=TRUE, sep=";", na.strings = "?", colClasses = c('character','character','numeric','numeric','numeric','numeric','numeric','numeric','numeric'))
+
+
+mydata$Date <- as.Date(mydata$Date, "%d/%m/%Y")
+
+mydata <- subset(mydata,Date >= as.Date("2007-2-1") & Date <= as.Date("2007-2-2"))
+
+mydata <- mydata[complete.cases(t),]
+
+dateTime <- paste(mydata$Date, mydata$Time)
+
+dateTime <- setNames(dateTime, "DateTime")
+
+mydata <- mydata[ ,!(names(mydata) %in% c("Date","Time"))]
+
+mydata <- cbind(dateTime, mydata)
+
+mydata$dateTime <- as.POSIXct(dateTime)
+
+
+
+##making plots
+hist(mydata$Global_active_power, main="Global Active Power", xlab = "Global Active Power (kilowatts)", col="red")
+
+plot(mydata$Global_active_power~mydata$dateTime, type="l", ylab="Global Active Power (kilowatts)", xlab="")
+
+
+##Not sure how to make the second two...my with loops are not working in R
